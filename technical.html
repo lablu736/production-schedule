@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical - Production Schedule System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-slate-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+      <div class="font-bold text-xl text-blue-400"><a href="index.html">PROD-SCHEDULER</a></div>
+      <div class="flex space-x-2 text-sm">
+        <a href="index.html" class="hover:bg-slate-800 py-2 px-3 rounded">Home</a>
+        <a href="technical.html" class="bg-slate-800 py-2 px-3 rounded text-blue-400">Technical</a>
+        <a href="data.html" class="hover:bg-slate-800 py-2 px-3 rounded">Data</a>
+        <a href="operator.html" class="hover:bg-slate-800 py-2 px-3 rounded">Operator Mode</a>
+        <a href="overall.html" class="hover:bg-slate-800 py-2 px-3 rounded">Overall</a>
+        <a href="preview.html" class="hover:bg-slate-800 py-2 px-3 rounded">Preview</a>
+        <a href="admin.html" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold">Admin</a>
+      </div>
+    </div>
+  </nav>
 
+  <div class="max-w-7xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">Machine Technical Specifications & Setup Parameters</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- ATMA Technical Details -->
+      <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">ATMA Screen Printing Setup</h2>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-semibold">Velocity Settings:</span> 25-30 m/min</p>
+          <p><span class="font-semibold">Squeegee Pressure:</span> 4.5 Bar</p>
+          <p><span class="font-semibold">Mesh Count Range:</span> 120T - 150T</p>
+          <p><span class="font-semibold">Curing Temperature:</span> 140°C</p>
+          <p><span class="font-semibold">Recommended Ink Viscosity:</span> 2000-3000 CPS</p>
+        </div>
+      </div>
+
+      <!-- Sakurai Technical Details -->
+      <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-indigo-500">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Sakurai Cylinder Press Setup</h2>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-semibold">Max Speed Capacity:</span> 3000 IPH</p>
+          <p><span class="font-semibold">Feeder Pressure:</span> Standard Pneumatic</p>
+          <p><span class="font-semibold">Sheet Thickness Range:</span> 0.1mm - 0.8mm</p>
+          <p><span class="font-semibold">UV Dryer Intensity:</span> 80% Power</p>
+          <p><span class="font-semibold">Registration Accuracy:</span> ±0.05 mm</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
