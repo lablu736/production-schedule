@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operator Mode - Production Schedule System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-slate-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+      <div class="font-bold text-xl text-blue-400"><a href="index.html">PROD-SCHEDULER</a></div>
+      <div class="flex space-x-2 text-sm">
+        <a href="index.html" class="hover:bg-slate-800 py-2 px-3 rounded">Home</a>
+        <a href="technical.html" class="hover:bg-slate-800 py-2 px-3 rounded">Technical</a>
+        <a href="data.html" class="hover:bg-slate-800 py-2 px-3 rounded">Data</a>
+        <a href="operator.html" class="bg-slate-800 py-2 px-3 rounded text-blue-400">Operator Mode</a>
+        <a href="overall.html" class="hover:bg-slate-800 py-2 px-3 rounded">Overall</a>
+        <a href="preview.html" class="hover:bg-slate-800 py-2 px-3 rounded">Preview</a>
+        <a href="admin.html" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold">Admin</a>
+      </div>
+    </div>
+  </nav>
 
+  <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
+    <h1 class="text-2xl font-bold mb-4 text-gray-800">Operator Shift Production Update</h1>
+    <form onsubmit="event.preventDefault(); submitOperatorLog();" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Operator Name</label>
+          <input type="text" id="opName" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Machine Selected</label>
+          <select id="opMachine" class="w-full border rounded p-2">
+            <option value="ATMA">ATMA Screen Printing</option>
+            <option value="Sakurai">Sakurai Cylinder Press</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Job ID / DJ Number</label>
+          <input type="text" id="opJob" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Shift Production Quantity</label>
+          <input type="number" id="opQty" class="w-full border rounded p-2" required>
+        </div>
+      </div>
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1 text-sm">Notes / Machine Issues</label>
+        <textarea id="opNotes" class="w-full border rounded p-2 text-sm" rows="3"></textarea>
+      </div>
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold text-sm">Submit Shift Data</button>
+    </form>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function submitOperatorLog() {
+      const payload = {
+        discreteJob: document.getElementById('opJob').value,
+        quantity: document.getElementById('opQty').value,
+        jobStatus: 'Running - ' + document.getElementById('opName').value,
+        customer: document.getElementById('opMachine').value + ' Line'
+      };
+      
+      const { error } = await db.from('job_listings').insert([payload]);
+      if (error) alert("Error: " + error.message);
+      else alert("Operator Log Updated Successfully!");
+    }
+  </script>
+</body>
+</html>
