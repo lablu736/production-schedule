@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data - Production Schedule System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-slate-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+      <div class="font-bold text-xl text-blue-400"><a href="index.html">PROD-SCHEDULER</a></div>
+      <div class="flex space-x-2 text-sm">
+        <a href="index.html" class="hover:bg-slate-800 py-2 px-3 rounded">Home</a>
+        <a href="technical.html" class="hover:bg-slate-800 py-2 px-3 rounded">Technical</a>
+        <a href="data.html" class="bg-slate-800 py-2 px-3 rounded text-blue-400">Data</a>
+        <a href="operator.html" class="hover:bg-slate-800 py-2 px-3 rounded">Operator Mode</a>
+        <a href="overall.html" class="hover:bg-slate-800 py-2 px-3 rounded">Overall</a>
+        <a href="preview.html" class="hover:bg-slate-800 py-2 px-3 rounded">Preview</a>
+        <a href="admin.html" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold">Admin</a>
+      </div>
+    </div>
+  </nav>
 
+  <div class="max-w-[95%] mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
+    <h1 class="text-2xl font-bold mb-4">Master Production Data Sheet</h1>
+    <div id="synced-data-container" class="overflow-x-auto text-xs">Loading Live Data...</div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function fetchData() {
+      const container = document.getElementById('synced-data-container');
+      const { data: jobData } = await db.from('job_listings').select('*');
+      const { data: upsData } = await db.from('ups_color').select('*');
+
+      let html = "";
+      if (jobData && jobData.length > 0) {
+        html += `<h3 class="font-bold text-sm mb-2 text-indigo-700">Job Listings</h3><table class="min-w-full border text-left mb-6"><tr class="bg-indigo-50 border-b"><th class="p-2 border">Job ID</th><th class="p-2 border">Customer</th><th class="p-2 border">Quantity</th><th class="p-2 border">Status</th></tr>`;
+        jobData.forEach(row => {
+          html += `<tr class="hover:bg-gray-50"><td class="p-2 border">${row.discreteJob || ''}</td><td class="p-2 border">${row.customer || ''}</td><td class="p-2 border">${row.quantity || ''}</td><td class="p-2 border">${row.jobStatus || ''}</td></tr>`;
+        });
+        html += `</table>`;
+      }
+
+      if (upsData && upsData.length > 0) {
+        html += `<h3 class="font-bold text-sm mb-2 text-blue-700">UPS & Color Information</h3><table class="min-w-full border text-left"><tr class="bg-blue-50 border-b"><th class="p-2 border">S/L</th><th class="p-2 border">Assembly</th><th class="p-2 border">Color</th><th class="p-2 border">Machine</th></tr>`;
+        upsData.forEach(row => {
+          html += `<tr class="hover:bg-gray-50"><td class="p-2 border">${row.sl || ''}</td><td class="p-2 border">${row.assembly || ''}</td><td class="p-2 border">${row.color || ''}</td><td class="p-2 border">${row.machine || ''}</td></tr>`;
+        });
+        html += `</table>`;
+      }
+
+      container.innerHTML = html || "<p class='text-gray-500'>কোনো ডাটা পাওয়া যায়নি।</p>";
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>
