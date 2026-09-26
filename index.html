@@ -1,1 +1,223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Schedule System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 font-sans">
 
+  <!-- Main Navigation -->
+  <nav class="bg-slate-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+      <div class="font-bold text-xl text-blue-400">PROD-SCHEDULER</div>
+      <div class="flex space-x-2 text-sm">
+        <button onclick="switchTab('home')" class="hover:bg-slate-800 py-2 px-3 rounded">Home</button>
+        <button onclick="switchTab('technical')" class="hover:bg-slate-800 py-2 px-3 rounded">Technical</button>
+        <button onclick="switchTab('data')" class="hover:bg-slate-800 py-2 px-3 rounded">Data</button>
+        <button onclick="switchTab('operator')" class="hover:bg-slate-800 py-2 px-3 rounded">Operator Mode</button>
+        <button onclick="switchTab('overall')" class="hover:bg-slate-800 py-2 px-3 rounded">Overall</button>
+        <button onclick="switchTab('preview')" class="hover:bg-slate-800 py-2 px-3 rounded">Preview</button>
+        <button onclick="switchTab('admin')" class="bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded text-white font-semibold">Admin</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-[95%] mx-auto p-6">
+
+    <!-- HOME TAB -->
+    <div id="tab-home" class="tab-content">
+      <h1 class="text-2xl font-bold mb-6 text-gray-800">Production Dashboard & Machine Status</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-5 border-t-4 border-blue-500">
+          <h2 class="text-xl font-bold text-gray-800 mb-3">ATMA Screen Printing Machine</h2>
+          <div class="mb-4 overflow-hidden rounded-lg bg-gray-200 h-48 flex items-center justify-center">
+            <span class="text-gray-500 font-semibold">[ ATMA Machine Photo ]</span>
+          </div>
+          <p><span class="font-semibold">Status:</span> <span class="text-green-600 font-bold">Running</span></p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-5 border-t-4 border-indigo-500">
+          <h2 class="text-xl font-bold text-gray-800 mb-3">Sakurai Cylinder Press Machine</h2>
+          <div class="mb-4 overflow-hidden rounded-lg bg-gray-200 h-48 flex items-center justify-center">
+            <span class="text-gray-500 font-semibold">[ Sakurai Machine Photo ]</span>
+          </div>
+          <p><span class="font-semibold">Status:</span> <span class="text-yellow-600 font-bold">Setup Mode</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div id="tab-admin" class="tab-content hidden">
+      <div id="admin-login-box" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
+        <h2 class="text-xl font-bold text-center text-gray-800 mb-4">Admin Login Panel</h2>
+        <form onsubmit="event.preventDefault(); handleLogin();">
+          <div class="mb-4">
+            <label class="block text-sm text-gray-600 mb-1">Username</label>
+            <input type="text" id="admin-username" class="w-full border rounded px-3 py-2" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm text-gray-600 mb-1">Password</label>
+            <input type="password" id="admin-password" class="w-full border rounded px-3 py-2" required>
+          </div>
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">Login</button>
+        </form>
+      </div>
+
+      <div id="admin-dashboard" class="hidden">
+        <div class="border-b border-gray-200 mb-6 bg-white p-2 rounded shadow-sm">
+          <ul class="flex space-x-4 text-sm font-semibold overflow-x-auto">
+            <li><button onclick="switchAdminSubTab('sub-ups-color')" class="py-2 px-3 text-blue-600 border-b-2 border-blue-600">1. UPS & Color Information</button></li>
+            <li><button onclick="switchAdminSubTab('sub-job-listing')" class="py-2 px-3 text-gray-500 hover:text-blue-600">2. Job Listing</button></li>
+          </ul>
+        </div>
+
+        <!-- Sub 1: UPS & Color -->
+        <div id="sub-ups-color" class="admin-sub-content bg-white p-6 rounded-lg shadow-sm">
+          <h3 class="text-lg font-bold mb-4 text-gray-800">1. UPS & Color Information Entry</h3>
+          <form onsubmit="event.preventDefault(); submitUPSColor();" class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div><label class="block text-xs font-medium">S/L</label><input type="text" id="sl" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Assembly</label><input type="text" id="assembly" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Order Item</label><input type="text" id="orderItem" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Color</label><input type="text" id="color" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">UPS</label><input type="text" id="ups" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Machine</label><input type="text" id="machine" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Quality</label><input type="text" id="quality" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Count</label><input type="text" id="count" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">RBO</label><input type="text" id="rbo" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Adhesive</label><input type="text" id="adhesive" class="border p-1.5 w-full rounded"></div>
+            <div class="col-span-full mt-2">
+              <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700">Save Data</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Sub 2: Job Listing -->
+        <div id="sub-job-listing" class="admin-sub-content hidden bg-white p-6 rounded-lg shadow-sm">
+          <h3 class="text-lg font-bold mb-4 text-gray-800">2. Job Listing Entry</h3>
+          <form onsubmit="event.preventDefault(); submitJobListing();" class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div><label class="block text-xs font-medium">Discrete Job</label><input type="text" id="discreteJob" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Customer</label><input type="text" id="customer" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Quantity</label><input type="number" id="quantity" class="border p-1.5 w-full rounded"></div>
+            <div><label class="block text-xs font-medium">Job Status</label><input type="text" id="jobStatus" class="border p-1.5 w-full rounded"></div>
+            <div class="col-span-full mt-2">
+              <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded font-semibold hover:bg-indigo-700">Save Job</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA TAB -->
+    <div id="tab-data" class="tab-content hidden bg-white p-6 rounded-lg shadow-md">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Live Connected Saved Data</h1>
+        <button onclick="fetchData()" class="bg-green-600 text-white px-4 py-1.5 rounded text-sm hover:bg-green-700">Refresh Data</button>
+      </div>
+      <div id="synced-data-container" class="overflow-x-auto text-xs">Loading data...</div>
+    </div>
+
+    <div id="tab-technical" class="tab-content hidden"><h1 class="text-2xl font-bold">Technical Specifications</h1></div>
+    <div id="tab-operator" class="tab-content hidden"><h1 class="text-2xl font-bold">Operator Mode</h1></div>
+    <div id="tab-overall" class="tab-content hidden"><h1 class="text-2xl font-bold">Overall Performance Reports</h1></div>
+    <div id="tab-preview" class="tab-content hidden"><h1 class="text-2xl font-bold">Print Preview</h1></div>
+
+  </div>
+
+  <script>
+    // ⚠️ আপনার Supabase Project Credentials নিচে বসান
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      if (tabId === 'data') fetchData();
+    }
+
+    function switchAdminSubTab(subTabId) {
+      document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(subTabId).classList.remove('hidden');
+    }
+
+    function handleLogin() {
+      const u = document.getElementById('admin-username').value;
+      const p = document.getElementById('admin-password').value;
+      if (u === "admin" && p === "admin123") {
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+      } else {
+        alert("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
+      }
+    }
+
+    async function submitUPSColor() {
+      const payload = {
+        sl: document.getElementById('sl').value,
+        assembly: document.getElementById('assembly').value,
+        orderItem: document.getElementById('orderItem').value,
+        color: document.getElementById('color').value,
+        ups: document.getElementById('ups').value,
+        machine: document.getElementById('machine').value,
+        quality: document.getElementById('quality').value,
+        count: document.getElementById('count').value,
+        rbo: document.getElementById('rbo').value,
+        adhesive: document.getElementById('adhesive').value
+      };
+
+      const { error } = await db.from('ups_color').insert([payload]);
+      if (error) {
+        alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + error.message);
+      } else {
+        alert("UPS & Color ডাটা সফলভাবে ডাটাবেজে সেভ হয়েছে!");
+      }
+    }
+
+    async function submitJobListing() {
+      const payload = {
+        discreteJob: document.getElementById('discreteJob').value,
+        customer: document.getElementById('customer').value,
+        quantity: document.getElementById('quantity').value,
+        jobStatus: document.getElementById('jobStatus').value
+      };
+
+      const { error } = await db.from('job_listings').insert([payload]);
+      if (error) {
+        alert("ডাটা সেভ করতে সমস্যা হয়েছে: " + error.message);
+      } else {
+        alert("Job Listing ডাটা সফলভাবে ডাটাবেজে সেভ হয়েছে!");
+      }
+    }
+
+    async function fetchData() {
+      const container = document.getElementById('synced-data-container');
+      
+      const { data: jobData } = await db.from('job_listings').select('*');
+      const { data: upsData } = await db.from('ups_color').select('*');
+
+      let html = "";
+      if (jobData && jobData.length > 0) {
+        html += `<h3 class="font-bold text-sm mb-2 text-indigo-700">Job Listings</h3><table class="min-w-full border text-left mb-6"><tr class="bg-indigo-50 border-b"><th class="p-2 border">Job ID</th><th class="p-2 border">Customer</th><th class="p-2 border">Quantity</th><th class="p-2 border">Status</th></tr>`;
+        jobData.forEach(row => {
+          html += `<tr class="hover:bg-gray-50"><td class="p-2 border">${row.discreteJob || ''}</td><td class="p-2 border">${row.customer || ''}</td><td class="p-2 border">${row.quantity || ''}</td><td class="p-2 border">${row.jobStatus || ''}</td></tr>`;
+        });
+        html += `</table>`;
+      }
+
+      if (upsData && upsData.length > 0) {
+        html += `<h3 class="font-bold text-sm mb-2 text-blue-700">UPS & Color Information</h3><table class="min-w-full border text-left"><tr class="bg-blue-50 border-b"><th class="p-2 border">S/L</th><th class="p-2 border">Assembly</th><th class="p-2 border">Color</th><th class="p-2 border">Machine</th></tr>`;
+        upsData.forEach(row => {
+          html += `<tr class="hover:bg-gray-50"><td class="p-2 border">${row.sl || ''}</td><td class="p-2 border">${row.assembly || ''}</td><td class="p-2 border">${row.color || ''}</td><td class="p-2 border">${row.machine || ''}</td></tr>`;
+        });
+        html += `</table>`;
+      }
+
+      container.innerHTML = html || "<p class='text-gray-500'>ডাটাবেজে এখনো কোনো ডাটা সেভ নেই।</p>";
+    }
+  </script>
+</body>
+</html>
